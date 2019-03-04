@@ -80,7 +80,7 @@ private:
   Int_t TestTrack(AliAODTrack *track);
   Int_t TestBC(Double_t tof) ;
 
-  Double_t NonlinearCorrection(AliVCluster *clu);
+ // Double_t NonlinearCorrection(AliVCluster *clu);
   void TestMatchingTrackPID(AliVCluster *clu, Double_t pt);
   
   TString              fCurrFileName;      // current file path name
