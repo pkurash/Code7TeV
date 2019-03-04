@@ -1199,7 +1199,7 @@ void AliAnalysisTaskGammaPHOS7TeV::SelectClusters()
   {
     AliAODCaloCluster *clu1 = fEvent->GetCaloCluster(i1);
 
-    if(fEvent->GetRunNumber() > 200000)
+    if(fEvent->GetRunNumber() > 209122)
     {
       if(clu1->GetType() != AliVCluster::kPHOSNeutral)      continue;
       if(TMath::Abs(clu1->GetTOF()) > 12.5e-9 && !fMCArray) continue; // TOF cut
@@ -2025,7 +2025,7 @@ Double_t  AliAnalysisTaskGammaPHOS7TeV::NonlinearCorrection(AliVCluster *clu)
    return (clu->E());
    else
    {
-    if(fEvent->GetRunNumber()> 100000 && fEvent->GetRunNumber() < 150000 /*7TeV*/)
+    if(fEvent->GetRunNumber() < 209122 )
     {
      Double_t calib=1.008;
      Double_t ParA=0.015;
@@ -2033,7 +2033,7 @@ Double_t  AliAnalysisTaskGammaPHOS7TeV::NonlinearCorrection(AliVCluster *clu)
      return (( (1+ParA/(1+pow(clu->E()/ParB,2)))*clu->E()*calib)); 
     }
     else
-    if(fEvent->GetRunNumber()> 200000 /*13TeV*/)
+    if(fEvent->GetRunNumber()> 209122 )
     {	
      Double_t calib=1.02;
      Double_t ParA=-0.035;
