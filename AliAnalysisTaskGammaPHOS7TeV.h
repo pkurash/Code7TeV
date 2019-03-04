@@ -1,5 +1,5 @@
-#ifndef AliAnalysisTaskGammaPHOS13TeV_cxx
-#define AliAnalysisTaskGammaPHOS13TeV_cxx
+#ifndef AliAnalysisTaskGammaPHOS7TeV_cxx
+#define AliAnalysisTaskGammaPHOS7TeV_cxx
 
 /* Copyright(c) 1998-1999, ALICE Experiment at CERN, All rights reserved. *
  * See cxx source for full Copyright notice     */
@@ -31,11 +31,11 @@ class AliAODEvent;
 #include "AliAODMCParticle.h"
 #include "AliLog.h"
 
-class AliAnalysisTaskGammaPHOS13TeV : public AliAnalysisTaskSE 
+class AliAnalysisTaskGammaPHOS7TeV : public AliAnalysisTaskSE 
 {
 public:
-  AliAnalysisTaskGammaPHOS13TeV(const char *name = "AliAnalysisTaskGammaPHOS13TeV");
-  virtual ~AliAnalysisTaskGammaPHOS13TeV() {}
+  AliAnalysisTaskGammaPHOS7TeV(const char *name = "AliAnalysisTaskGammaPHOS7TeV");
+  virtual ~AliAnalysisTaskGammaPHOS7TeV() {}
   
   virtual void   UserCreateOutputObjects();
   virtual void   UserExec(Option_t *option);
@@ -57,8 +57,8 @@ public:
   static  Bool_t PythiaInfoFromFile(TString currFile, Float_t & xsec, Float_t & trials) ;
     
 private:
-  AliAnalysisTaskGammaPHOS13TeV(const AliAnalysisTaskGammaPHOS13TeV&); 
-  AliAnalysisTaskGammaPHOS13TeV& operator=(const AliAnalysisTaskGammaPHOS13TeV&); 
+  AliAnalysisTaskGammaPHOS7TeV(const AliAnalysisTaskGammaPHOS7TeV&); 
+  AliAnalysisTaskGammaPHOS7TeV& operator=(const AliAnalysisTaskGammaPHOS7TeV&); 
   
   Bool_t AcceptEvent(AliAODEvent *event);
   Int_t  GetEventCentrality(AliAODEvent *event);
@@ -127,7 +127,7 @@ private:
   TClonesArray *fMCArray;
   AliTriggerAnalysis *fTriggerAnalysis; //! Trigger Analysis for Normalisation
 
-  ClassDef(AliAnalysisTaskGammaPHOS13TeV, 2); // PHOS analysis task
+  ClassDef(AliAnalysisTaskGammaPHOS7TeV, 2); // PHOS analysis task
 };
 
 #endif

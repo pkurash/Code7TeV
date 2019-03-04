@@ -22,7 +22,7 @@
 #include "TClonesArray.h"
 
 #include "AliAnalysisTaskSE.h"
-#include "AliAnalysisTaskGammaPHOS13TeV.h"
+#include "AliAnalysisTaskGammaPHOS7TeV.h"
 #include "AliCaloPhoton.h"
 #include "AliPHOSGeometry.h"
 #include "AliAODEvent.h"
@@ -55,10 +55,10 @@
 // Authors: Yuri Kharlov
 // Date   : 28.05.2009
 
-ClassImp(AliAnalysisTaskGammaPHOS13TeV)
+ClassImp(AliAnalysisTaskGammaPHOS7TeV)
 
 //________________________________________________________________________
-AliAnalysisTaskGammaPHOS13TeV::AliAnalysisTaskGammaPHOS13TeV(const char *name) 
+AliAnalysisTaskGammaPHOS7TeV::AliAnalysisTaskGammaPHOS7TeV(const char *name) 
 : AliAnalysisTaskSE(name),
   fESDtrackCuts(0),
   fOutputContainer(0),
@@ -106,8 +106,8 @@ AliAnalysisTaskGammaPHOS13TeV::AliAnalysisTaskGammaPHOS13TeV(const char *name)
     fVtx5[i] = 0;
    } 
 
-//  fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP") ;
-  fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") ;
+  fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP") ;
+  //fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") ;
 
   AliOADBContainer geomContainer("phosGeo");  
 
@@ -139,7 +139,7 @@ AliAnalysisTaskGammaPHOS13TeV::AliAnalysisTaskGammaPHOS13TeV(const char *name)
 }
 
 //________________________________________________________________________
-void AliAnalysisTaskGammaPHOS13TeV::UserCreateOutputObjects()
+void AliAnalysisTaskGammaPHOS7TeV::UserCreateOutputObjects()
 {
   // Create histograms, called once
 
@@ -645,7 +645,7 @@ void AliAnalysisTaskGammaPHOS13TeV::UserCreateOutputObjects()
 
 ================================================================================
 */
-void AliAnalysisTaskGammaPHOS13TeV::UserExec(Option_t *) 
+void AliAnalysisTaskGammaPHOS7TeV::UserExec(Option_t *) 
 {
 
   fEvent = dynamic_cast<AliAODEvent*>(InputEvent());
@@ -760,7 +760,7 @@ pidcomb->SetDetectorMask(AliPIDResponse::kDetTPC|AliPIDResponse::kDetTOF|AliPIDR
 /*============================================================================*/
 /*----------------------------------------------------------------------------*/
 
-void AliAnalysisTaskGammaPHOS13TeV::Terminate2(Option_t *)
+void AliAnalysisTaskGammaPHOS7TeV::Terminate2(Option_t *)
 {
   // Draw result to the screen
   // Called once at the end of the query
@@ -779,7 +779,7 @@ void AliAnalysisTaskGammaPHOS13TeV::Terminate2(Option_t *)
 
 //________________________________________________________________________
 
-Bool_t AliAnalysisTaskGammaPHOS13TeV::AcceptEvent(AliAODEvent *aodEvent)
+Bool_t AliAnalysisTaskGammaPHOS7TeV::AcceptEvent(AliAODEvent *aodEvent)
 {
 
   FillHistogram("hSelEvents",0) ; // All events accepted by Physics Selection
@@ -880,7 +880,7 @@ Bool_t AliAnalysisTaskGammaPHOS13TeV::AcceptEvent(AliAODEvent *aodEvent)
 }
 
 /*============================================================================*/
-Int_t AliAnalysisTaskGammaPHOS13TeV::GetEventCentrality(AliAODEvent *event)
+Int_t AliAnalysisTaskGammaPHOS7TeV::GetEventCentrality(AliAODEvent *event)
 {
 
 
@@ -933,7 +933,7 @@ Int_t AliAnalysisTaskGammaPHOS13TeV::GetEventCentrality(AliAODEvent *event)
 
 //_____________________________________________________________________________
 
-void AliAnalysisTaskGammaPHOS13TeV::FillHistogram(const char * key,Double_t x)const
+void AliAnalysisTaskGammaPHOS7TeV::FillHistogram(const char * key,Double_t x)const
 {
   //FillHistogram
   TH1I * tmpI = dynamic_cast<TH1I*>((fOutputContainer->FindObject(key))?(fOutputContainer->FindObject(key)):(fOutputContainer2->FindObject(key)) ) ;
@@ -960,7 +960,7 @@ void AliAnalysisTaskGammaPHOS13TeV::FillHistogram(const char * key,Double_t x)co
   AliInfo(Form("can not find histogram <%s> (Fill I)",key)) ;
 }
 //_____________________________________________________________________________
-void AliAnalysisTaskGammaPHOS13TeV::FillHistogram(const char * key,Double_t x,Double_t y)const
+void AliAnalysisTaskGammaPHOS7TeV::FillHistogram(const char * key,Double_t x,Double_t y)const
 {
   //FillHistogram
   TObject * tmp = (fOutputContainer->FindObject(key))?(fOutputContainer->FindObject(key)):(fOutputContainer2->FindObject(key)) ;
@@ -983,7 +983,7 @@ void AliAnalysisTaskGammaPHOS13TeV::FillHistogram(const char * key,Double_t x,Do
 }
 
 //_____________________________________________________________________________
-void AliAnalysisTaskGammaPHOS13TeV::FillHistogram(const char * key,Double_t x,Double_t y, Double_t z) const
+void AliAnalysisTaskGammaPHOS7TeV::FillHistogram(const char * key,Double_t x,Double_t y, Double_t z) const
 {
   //Fills 1D histograms with key
   TObject * tmp = (fOutputContainer->FindObject(key))?(fOutputContainer->FindObject(key)):(fOutputContainer2->FindObject(key)) ;
@@ -1007,7 +1007,7 @@ void AliAnalysisTaskGammaPHOS13TeV::FillHistogram(const char * key,Double_t x,Do
   }
 }
 //_____________________________________________________________________________
-void AliAnalysisTaskGammaPHOS13TeV::Sumw2Histogram(const char * key) const
+void AliAnalysisTaskGammaPHOS7TeV::Sumw2Histogram(const char * key) const
 {
   //Fills 1D histograms with key
   TObject * tmp = (fOutputContainer->FindObject(key))?(fOutputContainer->FindObject(key)):(fOutputContainer2->FindObject(key)) ;
@@ -1034,7 +1034,7 @@ void AliAnalysisTaskGammaPHOS13TeV::Sumw2Histogram(const char * key) const
 }
 
 //--------------------------------------------------------------------------------
-void AliAnalysisTaskGammaPHOS13TeV::ProcessMC()
+void AliAnalysisTaskGammaPHOS7TeV::ProcessMC()
 {
   if(!fMCArray) 
    return; 
@@ -1118,7 +1118,7 @@ void AliAnalysisTaskGammaPHOS13TeV::ProcessMC()
   
 }
 //------------------------------------------------------------------------------
-void AliAnalysisTaskGammaPHOS13TeV::AnalyseCells()
+void AliAnalysisTaskGammaPHOS7TeV::AnalyseCells()
 {
   AliAODCaloCells *cells = fEvent->GetPHOSCells();
 
@@ -1177,7 +1177,7 @@ void AliAnalysisTaskGammaPHOS13TeV::AnalyseCells()
 
 //------------------------------------------------------------------------------
 
-void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
+void AliAnalysisTaskGammaPHOS7TeV::SelectClusters()
 {
   //Analyze clusters and select photons for analysis
   
@@ -1199,6 +1199,15 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
   {
     AliAODCaloCluster *clu1 = fEvent->GetCaloCluster(i1);
 
+    if(fEvent->GetRunNumber() > 200000)
+    {
+      if(clu1->GetType() != AliVCluster::kPHOSNeutral)      continue;
+      if(TMath::Abs(clu1->GetTOF()) > 12.5e-9 && !fMCArray) continue; // TOF cut
+    }
+
+    if( !clu1->IsPHOS() ) continue;
+    if(clu1->GetM02() < 0.2)      continue ;    
+
     clu1->GetPosition(position);
     TVector3 global1(position) ;
     fPHOSGeo->GlobalPos2RelId(global1,relId) ;
@@ -1207,14 +1216,7 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
     cellZ = relId[3] ;
     energy = clu1->E();
     digMult = clu1->GetNCells();
-
-    if(fEvent->GetRunNumber() > 200000)
-    {
-      if(clu1->GetType() != AliVCluster::kPHOSNeutral)      continue;
-      if(TMath::Abs(clu1->GetTOF()) > 12.5e-9 && !fMCArray) continue; // TOF cut
-    }
-
-    if( !clu1->IsPHOS() ) continue;
+  
     if (mod1 < 1 || mod1 > 4) 
     {
       AliError(Form("Wrong module number %d",mod1));
@@ -1244,27 +1246,27 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
     if      (mod1==1) 
     {
       multPHOSClust[1]++;
-      FillHistogram("hClusterEvsN_all_M1",energy,digMult);
-      FillHistogram("hCellMultClu_all_M1",digMult);
+      FillHistogram("hClusterEvsN_all_M1", energy, digMult);
+      FillHistogram("hCellMultClu_all_M1", digMult);
       if(clu1->GetEmcCpvDistance() > 2.5)
       {
-          FillHistogram("hClusterEvsN_cpv_M1",energy,digMult);
-          FillHistogram("hCellMultClu_cpv_M1",digMult);
+          FillHistogram("hClusterEvsN_cpv_M1", energy, digMult);
+          FillHistogram("hCellMultClu_cpv_M1", digMult);
       }
       if(clu1->Chi2() < 2.5)
       {
-          FillHistogram("hClusterEvsN_disp_M1",energy,digMult);
-          FillHistogram("hCellMultClu_disp_M1",digMult);
+          FillHistogram("hClusterEvsN_disp_M1", energy, digMult);
+          FillHistogram("hCellMultClu_disp_M1", digMult);
       }
       if( clu1->GetEmcCpvDistance() > 2.5 && clu1->Chi2() < 2.5)
       {
-          FillHistogram("hClusterEvsN_both_M1",energy,digMult);
-          FillHistogram("hCellMultClu_cpv_M2",digMult);
+          FillHistogram("hClusterEvsN_both_M1", energy,digMult);
+          FillHistogram("hCellMultClu_cpv_M2", digMult);
       }
-      FillHistogram("hClusterEnergyM1",energy);
-      FillHistogram("hCluNXZM1",cellX,cellZ,1.);
+      FillHistogram("hClusterEnergyM1", energy);
+      FillHistogram("hCluNXZM1",cellX, cellZ, 1.);
 
-      FillHistogram("hCluEXZM1",cellX,cellZ,energy);
+      FillHistogram("hCluEXZM1", cellX, cellZ, energy);
     }
     else if (mod1==2) 
     {
@@ -1349,7 +1351,7 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
       Double_t pX   = p1.Px();
       Double_t pY   = p1.Py();
       if (pAbs<1.e-10) break;
-      Double_t kappa = pAbs - TMath::Power(0.135,2)/4./pAbs;
+      Double_t kappa = pAbs - TMath::Power(0.135, 2)/4./pAbs;
    
       FillHistogram("hPhotonKappa", kappa);
       FillHistogram("hPhotonPt", pT);
@@ -1362,7 +1364,7 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
       FillHistogram("hEmcCPVDistance", clu1->GetEmcCpvDistance());
       TestMatchingTrackPID(clu1, p11.Pt());
      
-      new((*fPHOSEvent)[fInPHOS]) AliCaloPhoton(p11.X(),p11.Py(),p11.Z(),p11.E()) ;
+      new((*fPHOSEvent)[fInPHOS]) AliCaloPhoton(p1.X(),p1.Py(),p1.Z(),p1.E()) ;
       AliCaloPhoton * ph = (AliCaloPhoton*)fPHOSEvent->At(fInPHOS) ;
       ph->SetModule(mod1) ;
       ph->SetMomV2(&p11) ;
@@ -1378,7 +1380,7 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
       ph->SetWeight(weight); 
       
       FillHistogram("hvt0vsvt5", p11.Pt()- p1.Pt());
-      FillHistogram("hBC", TestBC(clu1->GetTOF())+0.5);
+      FillHistogram("hBC", TestBC(clu1->GetTOF()) + 0.5);
       FillHistogram("hTOF", clu1->GetTOF());
       FillHistogram("hWeights", ph->GetWeight());      
 
@@ -1394,7 +1396,7 @@ void AliAnalysisTaskGammaPHOS13TeV::SelectClusters()
 
 //===========================================================================
 
-void AliAnalysisTaskGammaPHOS13TeV::FillOnePhotonHistograms(AliCaloPhoton *ph)
+void AliAnalysisTaskGammaPHOS7TeV::FillOnePhotonHistograms(AliCaloPhoton *ph)
 {
 
       TLorentzVector p11 = *(ph->GetMomV2());
@@ -1462,7 +1464,7 @@ void AliAnalysisTaskGammaPHOS13TeV::FillOnePhotonHistograms(AliCaloPhoton *ph)
 
 /*----------------------------------------------------------------------------*/
 
-void AliAnalysisTaskGammaPHOS13TeV::FillTwoPhotonHistograms()
+void AliAnalysisTaskGammaPHOS7TeV::FillTwoPhotonHistograms()
 {
   TLorentzVector p1, p2, p12, pv1, pv2, pv12, p11;
 
@@ -1613,7 +1615,7 @@ void AliAnalysisTaskGammaPHOS13TeV::FillTwoPhotonHistograms()
 }
 
 /*----------------------------------------------------------------------------*/
-void AliAnalysisTaskGammaPHOS13TeV::MixPhotons()
+void AliAnalysisTaskGammaPHOS7TeV::MixPhotons()
 {
 
   TLorentzVector p1, p2, p12, pv1, pv2, pv12, p11;
@@ -1748,7 +1750,7 @@ void AliAnalysisTaskGammaPHOS13TeV::MixPhotons()
 
 //=================================== Returns label ============================
 
-Int_t AliAnalysisTaskGammaPHOS13TeV::GetPrimaryLabelAtVertex(AliVCluster *clu)
+Int_t AliAnalysisTaskGammaPHOS7TeV::GetPrimaryLabelAtVertex(AliVCluster *clu)
 {
    if (!fMCArray) 
       return 0;
@@ -1784,7 +1786,7 @@ Int_t AliAnalysisTaskGammaPHOS13TeV::GetPrimaryLabelAtVertex(AliVCluster *clu)
 
 //=============================================================================
 
-Int_t AliAnalysisTaskGammaPHOS13TeV::GetPrimaryLabel(AliVCluster *clu)
+Int_t AliAnalysisTaskGammaPHOS7TeV::GetPrimaryLabel(AliVCluster *clu)
 {
    if (!fMCArray) 
       return 0;
@@ -1794,7 +1796,7 @@ Int_t AliAnalysisTaskGammaPHOS13TeV::GetPrimaryLabel(AliVCluster *clu)
 
 //=================================== TestGamma returns momentum==============
 
-Double_t AliAnalysisTaskGammaPHOS13TeV::TestGammaPt(AliCaloPhoton *ph)
+Double_t AliAnalysisTaskGammaPHOS7TeV::TestGammaPt(AliCaloPhoton *ph)
 {
 
    if(!fMCArray) 
@@ -1808,7 +1810,7 @@ Double_t AliAnalysisTaskGammaPHOS13TeV::TestGammaPt(AliCaloPhoton *ph)
 }
 
 //=======================================
-Int_t AliAnalysisTaskGammaPHOS13TeV::TestTrack(AliAODTrack *track)
+Int_t AliAnalysisTaskGammaPHOS7TeV::TestTrack(AliAODTrack *track)
 {
 
    if(!fMCArray) 
@@ -1831,21 +1833,21 @@ Int_t AliAnalysisTaskGammaPHOS13TeV::TestTrack(AliAODTrack *track)
 }
 
 //=======================================
-Double_t AliAnalysisTaskGammaPHOS13TeV::Weight(AliAODMCParticle *particle)
+Double_t AliAnalysisTaskGammaPHOS7TeV::Weight(AliAODMCParticle *particle)
 {
    // if(!fMCArray) 
     return 1.0;
 } 
 
 //=======================================
-Int_t AliAnalysisTaskGammaPHOS13TeV::TestBC(Double_t tof)
+Int_t AliAnalysisTaskGammaPHOS7TeV::TestBC(Double_t tof)
 {
   Int_t bc = (Int_t)(TMath::Ceil((tof + fBCgap/2)/fBCgap) - 1);
   return bc;
 }
 
 //===============================================
-Bool_t AliAnalysisTaskGammaPHOS13TeV::Notify()
+Bool_t AliAnalysisTaskGammaPHOS7TeV::Notify()
 {
   //
   // Implemented Notify() to read the cross sections
@@ -1891,7 +1893,7 @@ Bool_t AliAnalysisTaskGammaPHOS13TeV::Notify()
   
   fh1Trials->Fill("#sum{ntrials}",trials);
   
-  //printf("AliAnalysisTaskGammaPHOS13TeV::Notify() - xs %f, trial %f, avg trials %f\n",xsection,trials, fAvgTrials);
+  //printf("AliAnalysisTaskGammaPHOS7TeV::Notify() - xs %f, trial %f, avg trials %f\n",xsection,trials, fAvgTrials);
   
   if(fDebug) Printf("Reading File %s",fInputHandler->GetTree()->GetCurrentFile()->GetName());
   
@@ -1899,7 +1901,7 @@ Bool_t AliAnalysisTaskGammaPHOS13TeV::Notify()
 }
 
 //_____________________________________________________________________________________________________
-Bool_t AliAnalysisTaskGammaPHOS13TeV::PythiaInfoFromFile(TString file,Float_t & xsec,Float_t & trials)
+Bool_t AliAnalysisTaskGammaPHOS7TeV::PythiaInfoFromFile(TString file,Float_t & xsec,Float_t & trials)
 {
   //
   // get the cross section and the trails either from pyxsec.root or from pysec_hists.root
@@ -1979,7 +1981,7 @@ Bool_t AliAnalysisTaskGammaPHOS13TeV::PythiaInfoFromFile(TString file,Float_t & 
 
 //=================
 
-Bool_t AliAnalysisTaskGammaPHOS13TeV::PhotonWithinPeak(Double_t Minv, Double_t pt)
+Bool_t AliAnalysisTaskGammaPHOS7TeV::PhotonWithinPeak(Double_t Minv, Double_t pt)
 {
   const Int_t Nbins = 33;
 
@@ -2017,7 +2019,7 @@ Bool_t AliAnalysisTaskGammaPHOS13TeV::PhotonWithinPeak(Double_t Minv, Double_t p
 }
 
 //=================
-Double_t  AliAnalysisTaskGammaPHOS13TeV::NonlinearCorrection(AliVCluster *clu)
+Double_t  AliAnalysisTaskGammaPHOS7TeV::NonlinearCorrection(AliVCluster *clu)
 {
    if(!fMCArray)
    return (clu->E());
@@ -2043,7 +2045,7 @@ Double_t  AliAnalysisTaskGammaPHOS13TeV::NonlinearCorrection(AliVCluster *clu)
    }  
 }
 //=================
-void AliAnalysisTaskGammaPHOS13TeV::TestMatchingTrackPID(AliVCluster *clu1, Double_t pt)
+void AliAnalysisTaskGammaPHOS7TeV::TestMatchingTrackPID(AliVCluster *clu1, Double_t pt)
 {
   
     Bool_t CPVBit = kFALSE;
@@ -2325,7 +2327,7 @@ void AliAnalysisTaskGammaPHOS13TeV::TestMatchingTrackPID(AliVCluster *clu1, Doub
 
 /*----------------------------------------------------------------------------*/
 
-void AliAnalysisTaskGammaPHOS13TeV::PHOSvsEMCALClusters()
+void AliAnalysisTaskGammaPHOS7TeV::PHOSvsEMCALClusters()
 {
    Int_t multPHOS = 0 , multEMCAL = 0;
 
