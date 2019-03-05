@@ -122,22 +122,22 @@ void runAnalysis2(Bool_t local = kTRUE, TString period = "LHC14j4b", TString run
         // runnumber
         //alienHandler->AddRunNumber(167813);
         /*---------------------*/
+        //runnumber
         Int_t evN[500];
         Int_t nn = 0;
         ifstream ff;
-        ff.open(Form("dataset/runs_%s.list", period.Data()));
+         ff.open(Form("datasets/runs_%s.list", period.Data()));
+        //Add runs
         while( !ff.eof() )
         {
          ff>>evN[nn];
          nn = nn + 1;
         }
         ff.close();
-        //Add runs
         /*--------------------*/
-        for(Int_t  i = 0; i < nn; i ++)
-        {  
-         alienHandler->AddRunNumber(evN[i]);
-        }
+        for(Int_t  i = 0; i < 50; i ++)
+          alienHandler->AddRunNumber(evN[i]);
+          
         /*---------------------*/
         // number of files per subjob
         alienHandler->SetSplitMaxInputFileNumber(50);
