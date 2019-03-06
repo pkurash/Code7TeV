@@ -135,7 +135,7 @@ void runAnalysis2(Bool_t local = kTRUE, TString period = "LHC14j4b", TString run
         }
         ff.close();
         /*--------------------*/
-        for(Int_t  i = 0; i < 50; i ++)
+        for(Int_t  i = 0; i < nn; i ++)
           alienHandler->AddRunNumber(evN[i]);
           
         /*---------------------*/

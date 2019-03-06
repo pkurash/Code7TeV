@@ -54,7 +54,7 @@ void runAnalysis(Bool_t local = kTRUE, TString period = "LHC10b", TString runmod
     AliAnalysisTaskGammaPHOS7TeV *task = 
        reinterpret_cast<AliAnalysisTaskGammaPHOS7TeV*>(gInterpreter->ExecuteMacro("AddMyTask.C"));
 #else
-    gROOT->LoadMacro("AliCaloPhoton.cxx++g");
+    gROOT->LoadMacro("./AliCaloPhoton.cxx++g");
     gROOT->LoadMacro("AliAnalysisTaskGammaPHOS7TeV.cxx++g");
     gROOT->LoadMacro("AddMyTask.C");
     AliAnalysisTaskGammaPHOS7TeV *task = AddMyTask();
@@ -113,7 +113,7 @@ void runAnalysis(Bool_t local = kTRUE, TString period = "LHC10b", TString runmod
         }
         ff.close();
         /*--------------------*/
-        for(Int_t  i = 0; i < nn; i ++)
+        for(Int_t  i = 0; i < 10; i ++)
           alienHandler->AddRunNumber(evN[i]);
         
    /*-------------------------*/
