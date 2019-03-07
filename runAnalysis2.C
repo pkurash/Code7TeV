@@ -30,7 +30,7 @@ void runAnalysis2(Bool_t local = kTRUE, TString period = "LHC14j4b", TString run
 #endif
      
     // create the analysis manager
-    AliAnalysisManager *mgr = new AliAnalysisManager("GammaAnalysis");
+    AliAnalysisManager *mgr  = new AliAnalysisManager("GammaAnalysis");
     AliAODInputHandler *aodH = new AliAODInputHandler();
     mgr->SetInputEventHandler(aodH);
 

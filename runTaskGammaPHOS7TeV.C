@@ -8,143 +8,141 @@
 #include "TApplication.h"
 #endif
 void LoadEnv(); 
-void runAnalysis(Bool_t local = kTRUE, TString period = "LHC10b", TString runmode = "terminate")
+void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
+                           TString period  = "LHC10b", 
+                           TString runmode = "terminate",
+                           Bool_t  local    = kTRUE)
 {
-    Bool_t gridTest = kFALSE;
-
     LoadEnv();
-    
-    TGrid::Connect("alien://");
+    TGrid::Connect("alien://");  
+    Bool_t gridTest = kFALSE;
 
     // create the analysis manager
     AliAnalysisManager *mgr = new AliAnalysisManager("GammaAnalysis");
     AliAODInputHandler *aodH = new AliAODInputHandler();
     mgr->SetInputEventHandler(aodH);
     
-/*----------------------------------*/
-   Bool_t isMC = kFALSE; 
-
+    const char*  tenderOption = isMC ? "LHC14j4b" : "";
+    Int_t        tenderPass   = isMC ? 1 : 4;
+    Int_t        recoPass     = 4;
 
      AliPHOSTenderTask *tender = reinterpret_cast<AliPHOSTenderTask *>(
         gInterpreter->ExecuteMacro(
         Form("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C(\"%s\",\"%s\",\"%s\",%d, %d)", 
-             "PHOSTenderTask","PHOStender","", 4, kFALSE)));
+             "PHOSTenderTask","PHOStender", tenderOption, tenderPass, isMC)));
 
     AliPHOSTenderSupply *supply = tender->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("alien:///alice/cern.ch/user/p/pkurash/BadMap_LHC10ef_Majority300416.root");
     
     TString nonlinearity = isMC ? "MC" : "Default";
     supply->SetNonlinearityVersion(nonlinearity); 
+    if(isMC)
+    {
+       Double_t NonlinPar[3]={1.008, 0.045, 0.4};
+       supply->SetNonlinearityParams(3, NonlinPar);
+    }
 
+    // Use custom Zero Suppression threshold if needed     
+    if(isMC)
+    {
+      Double_t zs_threshold = 0.020;
+      supply->ApplyZeroSuppression(zs_threshold); 
+    }
 
-/*----------------------------------*/
+    TMacro addresp(gSystem->ExpandPathName("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C"));
+    addresp.Exec(Form("%d", isMC));
+    addresp.Exec(Form("%d", recoPass));
 
-   TMacro addresp(gSystem->ExpandPathName("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C"));
-   addresp.Exec(Form("%d", isMC));
-   addresp.Exec("4");
-
-/*----------------------------------*/
-
-    // compile the class and load the add task macro
-    // here we have to differentiate between using the just-in-time compiler
-    // from root6, or the interpreter of root5
-    /*
-#if !defined (__CINT__) || defined (__CLING__)
-    gInterpreter->LoadMacro("AliCaloPhoton.cxx++g");
-    gInterpreter->LoadMacro("AliAnalysisTaskGammaPHOS7TeV.cxx++g");
-    AliAnalysisTaskGammaPHOS7TeV *task = 
-       reinterpret_cast<AliAnalysisTaskGammaPHOS7TeV*>(gInterpreter->ExecuteMacro("AddMyTask.C"));
-#else
-*/
     gROOT->LoadMacro("AliCaloPhoton.cxx++g");
     gROOT->LoadMacro("AliAnalysisTaskGammaPHOS7TeV.cxx++g");
     AliAnalysisTaskGammaPHOS7TeV *task = 
        reinterpret_cast<AliAnalysisTaskGammaPHOS7TeV*>((gInterpreter->ExecuteMacro(
-        Form("AddMyTask.C()"))));
-//    TMacro addtask(gSystem->ExpandPathName("./AddMyTask.C"));
-//    AliAnalysisTaskGammaPHOS7TeV *task = reinterpret_cast<AliAnalysisTaskGammaPHOS7TeV*>(addtask.Exec(Form("%s","mm")));
-    //gROOT->LoadMacro("AddMyTask.C");
-    //AliAnalysisTaskGammaPHOS7TeV *task = AddMyTask();
-    //task->Exec(Form("%s", "GammaTask"));
-//#endif
+        Form("AddTaskGammaPHOS7TeV.C(%d)", isMC))));
+        
+        // Apply recalibration
+    if(!isMC)
+    {
+       task->SetRecalib(1, 0.9822696);
+       task->SetRecalib(2, 0.9861288);
+       task->SetRecalib(3, 1.0072);
+    }     
 
 
-    task->SetRecalib(1, 0.9822696);
-    task->SetRecalib(2, 0.9861288);
-    task->SetRecalib(3, 1.0072);
-/*----------------------------------*/
+     if(!mgr->InitAnalysis()) return;
+     mgr->SetDebugLevel(2);
+     mgr->PrintStatus();
+     mgr->SetUseProgressBar(1, 25);
 
 
-    if(!mgr->InitAnalysis()) return;
-    mgr->SetDebugLevel(2);
-    mgr->PrintStatus();
-    mgr->SetUseProgressBar(1, 25);
-
-    if(local) {
-        // if you want to run locally, we need to define some input
+    if(local) 
+    {
         TChain* chain = new TChain("aodTree");
-        // add a few files to the chain (change this so that your local files are added)
-        chain->Add("alien:///alice/data/2010/LHC10d/000126285/pass4/AOD172/0001/AliAOD.root");
-        // start the analysis locally, reading the events from the tchain
+        if(isMC)
+          chain->Add("alien:///alice/sim/2014/LHC14j4e/129647/AOD/074/AliAOD.root");
+        else
+          chain->Add("alien:///alice/data/2010/LHC10d/000126285/pass4/AOD172/0001/AliAOD.root");
         mgr->StartAnalysis("local", chain);
-    } else {
+    } else 
+      {
         // if we want to run on grid, we create and configure the plugin
         AliAnalysisAlien *alienHandler = new AliAnalysisAlien();
-        // also specify the include (header) paths on grid
         alienHandler->AddIncludePath("-I. -I$ROOTSYS/include -I$ALICE_ROOT -I$ALICE_ROOT/include -I$ALICE_PHYSICS/include");
-        // make sure your source files get copied to grid
-        //alienHandler->SetAdditionalLibs("AliAnalysisTaskMyTask.cxx AliAnalysisTaskMyTask.h");
         alienHandler->SetAdditionalLibs("AliAnalysisTaskGammaPHOS7TeV.h AliAnalysisTaskGammaPHOS7TeV.cxx AliCaloPhoton.h AliCaloPhoton.cxx  libTender.so libTenderSupplies.so libPWGGAPHOSTasks.so");
         alienHandler->SetAnalysisSource("AliAnalysisTaskGammaPHOS7TeV.cxx");
+        
         // select the aliphysics version. all other packages
         // are LOADED AUTOMATICALLY!
         alienHandler->SetAliPhysicsVersion("vAN-20190304-1");
         // set the Alien API version
         alienHandler->SetAPIVersion("V1.1x");
-        // select the input data
-        alienHandler->SetGridDataDir(Form("/alice/data/2010/%s", period.Data()));
-        alienHandler->SetDataPattern("pass4/AOD172/*/AliAOD.root");
-        // MC has no prefix, data has prefix 000
-        alienHandler->SetRunPrefix("000");
-
-   /*-------------------------*/
-        //runnumber
-        Int_t evN[500];
-        Int_t nn = 0;
+        
+        // select the input data        
+        Int_t year = 2010;
+        if(period.Contains("10")) year = 2010;
+        if(period.Contains("11")) year = 2011;
+        if(period.Contains("12")) year = 2012;
+        if(period.Contains("13")) year = 2013; 
+        if(period.Contains("14")) year = 2014;
+        if(period.Contains("15")) year = 2015;                               
+        if(isMC)
+        {
+           alienHandler->SetGridDataDir(Form("/alice/sim/%d/%s", year, period.Data()));
+           alienHandler->SetDataPattern("AOD/*/AliAOD.root");
+        }
+        else
+        {
+           alienHandler->SetGridDataDir(Form("/alice/data/%d/%s", year, period.Data()));
+           alienHandler->SetDataPattern("pass4/AOD172/*/AliAOD.root");
+           alienHandler->SetRunPrefix("000");
+        }        
+                
+        // define the output folders
+        alienHandler->SetGridWorkingDir(Form("pp_Analysis/%s", period.Data()));
+        alienHandler->SetGridOutputDir("output");
+        
+        //define run numbers
+        Int_t evN[500], nn = 0;
         ifstream ff;
-         ff.open(Form("datasets/runs_%s.list", period.Data()));
-        //Add runs
+        ff.open(Form("datasets/runs_%s.list", period.Data()));
         while( !ff.eof() )
         {
          ff>>evN[nn];
          nn = nn + 1;
         }
         ff.close();
-        /*--------------------*/
         for(Int_t  i = 0; i < nn; i ++)
-          alienHandler->AddRunNumber(evN[i]);
-        
-   /*-------------------------*/
+            alienHandler->AddRunNumber(evN[i]);
 
         // number of files per subjob
         alienHandler->SetSplitMaxInputFileNumber(40);
         alienHandler->SetExecutable("myTask.sh");
-        // specify how many seconds your job may take
-        alienHandler->SetTTL(10800);
         alienHandler->SetJDLName("myTask.jdl");
+         alienHandler->SetTTL(10800);
 
         alienHandler->SetOutputToRunNo(kTRUE);
         alienHandler->SetKeepLogs(kTRUE);
-        // merging: run with kTRUE to merge on grid
-        // after re-running the jobs in SetRunMode("terminate") 
-        // (see below) mode, set SetMergeViaJDL(kFALSE) 
-        // to collect final results
         alienHandler->SetMaxMergeStages(1);
         alienHandler->SetMergeViaJDL(kTRUE);
-
-        // define the output folders
-        alienHandler->SetGridWorkingDir(Form("pp_Analysis/%s_test", period.Data()));
-        alienHandler->SetGridOutputDir("pass4");
 
         // connect the alien plugin to the manager
         mgr->SetGridHandler(alienHandler);
@@ -156,12 +154,12 @@ void runAnalysis(Bool_t local = kTRUE, TString period = "LHC10b", TString runmod
             alienHandler->SetRunMode("test");
             mgr->StartAnalysis("grid");
         } 
-        else 
-        {
-            // else launch the full grid analysis
-            alienHandler->SetRunMode(runmode.Data());
-            mgr->StartAnalysis("grid");
-        }
+           else 
+           {
+              // else launch the full grid analysis
+              alienHandler->SetRunMode(runmode.Data());
+              mgr->StartAnalysis("grid");
+           }
     }
 }
 void LoadEnv()
@@ -198,5 +196,4 @@ void LoadEnv()
     gROOT->ProcessLine(".include $ALICE_ROOT/PHOS");
 #endif
      
-
 }
