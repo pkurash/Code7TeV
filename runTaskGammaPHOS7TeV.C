@@ -147,15 +147,12 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
         mgr->SetGridHandler(alienHandler);
         if(gridTest) 
         {
-            // speficy on how many files you want to run
             alienHandler->SetNtestFiles(1);
-            // and launch the analysis
             alienHandler->SetRunMode("test");
             mgr->StartAnalysis("grid");
         } 
            else 
            {
-              // else launch the full grid analysis
               alienHandler->SetRunMode(runmode.Data());
               mgr->StartAnalysis("grid");
            }
