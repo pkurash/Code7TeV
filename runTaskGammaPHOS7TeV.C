@@ -90,8 +90,7 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
         alienHandler->SetAdditionalLibs("AliAnalysisTaskGammaPHOS7TeV.h AliAnalysisTaskGammaPHOS7TeV.cxx AliCaloPhoton.h AliCaloPhoton.cxx  libTender.so libTenderSupplies.so libPWGGAPHOSTasks.so");
         alienHandler->SetAnalysisSource("AliAnalysisTaskGammaPHOS7TeV.cxx");
         
-        // select the aliphysics version. all other packages
-        // are LOADED AUTOMATICALLY!
+        // select the aliphysics version.
         alienHandler->SetAliPhysicsVersion("vAN-20190304-1");
         // set the Alien API version
         alienHandler->SetAPIVersion("V1.1x");
