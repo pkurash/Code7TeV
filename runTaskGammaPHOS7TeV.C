@@ -54,7 +54,7 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
     addresp.Exec(Form("%d", recoPass));
 
     gROOT->LoadMacro("AliCaloPhoton.cxx++g");
-    gROOT->LoadMacro("AliAnalysisTaskGammaPHOS7TeV.cxx++g");
+    gROOT->LoadMacro(" AliAnalysisTaskGammaPHOS7TeV.cxx++g");
     AliAnalysisTaskGammaPHOS7TeV *task = 
        reinterpret_cast<AliAnalysisTaskGammaPHOS7TeV*>((gInterpreter->ExecuteMacro(
         Form("AddTaskGammaPHOS7TeV.C(%d)", isMC))));

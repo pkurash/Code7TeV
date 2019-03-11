@@ -104,15 +104,15 @@ AliAnalysisTaskGammaPHOS7TeV::AliAnalysisTaskGammaPHOS7TeV(const char *name)
   {
     fVtx0[i] = 0;
     fVtx5[i] = 0;
-   } 
+  } 
+
 
   fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP") ;
   //fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") ;
-
+/*
   AliOADBContainer geomContainer("phosGeo");  
 
-  geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSMCGeometry.root", 
-                            "PHOSMCRotationMatrixes");
+  geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSMCGeometry.root", "PHOSMCRotationMatrixes");
 
    Int_t runNumber=254128; //LHC10b 
    TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(runNumber,"PHOSRotationMatrixes");
@@ -123,7 +123,19 @@ AliAnalysisTaskGammaPHOS7TeV::AliAnalysisTaskGammaPHOS7TeV(const char *name)
           printf(".........Adding Matrix(%d), geo=%p\n",mod,fPHOSGeo) ;
           ((TGeoHMatrix*)matrixes->At(mod))->Print() ;
 	}
-	
+*/
+
+  
+	// check geometry
+    /*
+	if (!AliPHOSGeometry::GetInstance())
+	{
+		AliInfo("PHOS geometry not initialized, initializing it for you");
+		// Don't instantinate geometry: Use tender
+		AliPHOSGeometry::GetInstance();
+        }
+
+     */	
   //  fWeightFunction= new TF1("fWeightFunction", "1.0", 0., 99999.) ;
 
     fWeightFunction= new TF1("fWeightFunction", "([0]+[1]*x+[2]*x*x)/(1.+[3]*x+[4]*x*x)+[5]*x", 0.1, 40) ;
@@ -716,11 +728,11 @@ pidcomb->SetDetectorMask(AliPIDResponse::kDetTPC|AliPIDResponse::kDetTOF|AliPIDR
   {
     for(Int_t mod=0; mod<5; mod++) 
     {
-      if(!fEvent->GetPHOSMatrix(mod)) continue;
+      if(fEvent->GetPHOSMatrix(mod)) continue;
       fPHOSGeo->SetMisalMatrix(fEvent->GetPHOSMatrix(mod),mod) ;
       Printf("PHOS geo matrix %p for module # %d is set\n", fEvent->GetPHOSMatrix(mod), mod);
     }
-  }
+   }
 /*----------------------------------------------------------------------------*/
 /* Count PHOS and EMCAL clusters */
 
