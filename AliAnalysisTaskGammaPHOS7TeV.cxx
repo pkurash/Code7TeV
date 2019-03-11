@@ -1206,7 +1206,7 @@ void AliAnalysisTaskGammaPHOS7TeV::SelectClusters(AliAODCaloCluster *clu1)
   
   TLorentzVector p1, p11;
   
-  Int_t mod1, relId[4], cellAbsId, cellX, cellZ;
+  Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
   Float_t  position[3];  
   Int_t digMult;
   Double_t energy;
