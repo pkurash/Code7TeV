@@ -90,7 +90,8 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
         alienHandler->SetAdditionalLibs("AliAnalysisTaskGammaPHOS7TeV.h AliAnalysisTaskGammaPHOS7TeV.cxx AliCaloPhoton.h AliCaloPhoton.cxx  libTender.so libTenderSupplies.so libPWGGAPHOSTasks.so");
         alienHandler->SetAnalysisSource("AliAnalysisTaskGammaPHOS7TeV.cxx");
         
-        // select the aliphysics version.
+        // select the aliphysics version. all other packages
+        // are LOADED AUTOMATICALLY!
         alienHandler->SetAliPhysicsVersion("vAN-20190304-1");
         // set the Alien API version
         alienHandler->SetAPIVersion("V1.1x");
@@ -129,7 +130,7 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
          nn = nn + 1;
         }
         ff.close();
-        for(Int_t  i = 0; i < nn; i ++)
+        for(Int_t  i = 0; i < 10; i ++)
             alienHandler->AddRunNumber(evN[i]);
 
         // number of files per subjob
@@ -147,12 +148,15 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
         mgr->SetGridHandler(alienHandler);
         if(gridTest) 
         {
+            // speficy on how many files you want to run
             alienHandler->SetNtestFiles(1);
+            // and launch the analysis
             alienHandler->SetRunMode("test");
             mgr->StartAnalysis("grid");
         } 
            else 
            {
+              // else launch the full grid analysis
               alienHandler->SetRunMode(runmode.Data());
               mgr->StartAnalysis("grid");
            }
