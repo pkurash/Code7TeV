@@ -130,7 +130,7 @@ void runTaskGammaPHOS7TeV( Bool_t isMC    =  kFALSE,
          nn = nn + 1;
         }
         ff.close();
-        for(Int_t  i = 0; i < 10; i ++)
+        for(Int_t  i = 10; i < nn; i ++)
             alienHandler->AddRunNumber(evN[i]);
 
         // number of files per subjob
